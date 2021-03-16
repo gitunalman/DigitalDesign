@@ -38,6 +38,7 @@ RCC.VCOSAI2OutputFreq_Value=128000000
 PA3.GPIO_Speed=GPIO_SPEED_FREQ_VERY_HIGH
 boardIOC=true
 PA2.GPIOParameters=GPIO_Speed,GPIO_PuPd,GPIO_Label,GPIO_Mode
+NVIC.USART2_IRQn=true\:0\:0\:false\:false\:true\:true\:true
 PinOutPanel.RotationAngle=0
 RCC.FamilyName=M
 PH1-OSC_OUT\ (PH1).Signal=RCC_OSC_OUT

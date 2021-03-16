@@ -43,7 +43,10 @@
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
-char tx_buff[128] = {};
+uint8_t tx_buff[128] = {};
+uint8_t rx_buff[128] = {};
+uint8_t rx_data = 0;
+uint8_t rx_index = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -56,7 +59,22 @@ static void MX_USART2_UART_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+	if(huart->Instance == USART2) {
+		if(rx_data != 0x0A)
+			rx_buff[rx_index++] = rx_data;
+		else {
+			HAL_UART_Transmit(&huart2, rx_buff, rx_index, 100);
+			for(int i = 0; i < rx_index; i++) {
+				rx_buff[i] = 0;
+			}
+			rx_index = 0;
+		}
 
+		HAL_UART_Receive_IT(&huart2, &rx_data, 1);
+	}
+}
 /* USER CODE END 0 */
 
 /**
@@ -89,6 +107,8 @@ int main(void)
   MX_GPIO_Init();
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
+
+  HAL_UART_Receive_IT(&huart2, &rx_data, 1);
 
   snprintf(tx_buff, sizeof(tx_buff), "Hello Digital Design\r\n");
   printf(tx_buff);
