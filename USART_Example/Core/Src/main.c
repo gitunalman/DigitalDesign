@@ -22,7 +22,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include <stdio.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -43,7 +43,7 @@
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
-
+char tx_buff[128] = {};
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -90,16 +90,18 @@ int main(void)
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
 
+  snprintf(tx_buff, sizeof(tx_buff), "Hello Digital Design\r\n");
+  printf(tx_buff);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	 if(HAL_UART_Transmit(&huart2, "Test ", 6, 100) != HAL_OK)
-		 Error_Handler();
+	 //if(HAL_UART_Transmit(&huart2, "Test ", 6, 100) != HAL_OK)
+		 //Error_Handler();
 
-	 HAL_Delay(500);
+	 //HAL_Delay(500);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -230,7 +232,23 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+int __io_putchar(int ch)
+{
+	uint8_t c[1];
+	c[0] = ch & 0x00FF;
+	HAL_UART_Transmit(&huart2, &*c, 1, 10);
+	return ch;
+}
 
+int _write(int file,char *ptr, int len)
+{
+	int DataIdx;
+	for(DataIdx= 0; DataIdx< len; DataIdx++)
+	{
+		__io_putchar(*ptr++);
+	}
+	return len;
+}
 /* USER CODE END 4 */
 
 /**
